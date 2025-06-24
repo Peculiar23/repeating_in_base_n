@@ -1,0 +1,59 @@
+def to_base_fraction(fraction, base, digits=20):
+    #Converts a fractional number (0 < fraction < 1) to base-n representation
+    result = []
+    for _ in range(digits):
+        fraction *= base
+        digit = int(fraction)
+        result.append(digit)
+        fraction -= digit
+        if fraction == 0:
+            break
+    return result
+
+def to_base_integer(number, base):
+    #Converts an integer to base-n as a list of digits
+    if number == 0:
+        return [0]
+    digits = []
+    while number:
+        digits.append(number % base)
+        number //= base
+    return list(reversed(digits))
+
+def is_repeating_sequence(lst, n):
+    #Checks if lst is made by repeating the sequence [0, 1, ..., n-1].
+    pattern = list(range(n))
+    pattern_len = len(pattern)
+    if len(lst) % pattern_len != 0:
+        return False  # Length must be a multiple of the pattern length
+    for i in range(0, len(lst), pattern_len):
+        if lst[i:i+pattern_len] != pattern:
+            return False
+    return True
+# Parameters
+n = 10
+result = 1 / ((n - 1) ** 2)
+lessone = n - 1
+lesstwo = n - 2
+plusone = n + 1
+# Convert integer and fractional parts separately
+integer_part = int(result)
+fractional_part = result - integer_part
+# Convert to base n
+integer_digits = to_base_integer(integer_part, n)
+fractional_digits = to_base_fraction(fractional_part, n, digits=20)
+# Print result
+print("1/({}-1)^2 in base {}: {}.{}".format(
+    n, n,
+    ''.join(str(d) for d in integer_digits),
+    ''.join(str(d) for d in fractional_digits)
+))
+# Make your result into a list
+myList = list(fractional_digits)
+# Check
+print(f"Does the digit {n} appear in the list? {'Yes' if n in myList else 'No'}")
+print(f"Does the digit {lesstwo} appear in the list? {'Yes' if lesstwo in myList else 'No'}")
+print(f"Does the digit {plusone} appear in the list? {'Yes' if plusone in myList else 'No'}")
+all_digits_present = set(myList) == set(range(n))
+print(f"All digits 0 to {n-1} present? {'Yes' if all_digits_present else 'No'}")
+print(f"Is the list a repeating sequence of 0..{n-1}? {is_repeating_sequence(myList, n)}")
